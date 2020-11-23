@@ -1,5 +1,3 @@
-const randomize = require("randomatic");
-const CryptoJS = require("crypto-js");
 const router = require("express").Router();
 let User = require("../models/user.model");
 
@@ -36,6 +34,28 @@ router.route("/auth").post((req, res) => {
     });
   });
   //   on success, send signal,
+});
+
+router.route("/:id/name").patch((req, res) => {
+  // update specific user details.
+  const id = req.params.id;
+
+  const name = req.body.name;
+
+  User.updateOne({ _id: id }, { name: name }, (err, callback) => {
+    if (err) throw err;
+    res.json(callback);
+  });
+});
+
+router.route("/:id").get((req, res) => {
+  //  return specific user details.
+  const id = req.params.id;
+
+  User.findOne({ _id: id }, (err, user) => {
+    if (err) throw err;
+    res.status(200).json(user);
+  });
 });
 
 module.exports = router;
