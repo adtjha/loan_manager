@@ -1,23 +1,25 @@
 const router = require("express").Router();
-let Loan = require("../models/loan.model");
+let Loan = require("../db/models/loan.model");
+let User = require("../db/models/user.model");
+const moment = require("moment");
 
 router.route("/").get((req, res) => {
   Loan.find()
+    .select("particulars _id status user")
+    .populate("user", "_id name category")
     .then((Loan) => res.json(Loan))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.route("/").post((req, res, next) => {
   // create loan from data.
-  const customer = req.body.customer;
-  const provider = req.body.provider;
+  const user = req.body.user;
   const particulars = req.body.particulars;
   const purpose = req.body.purpose;
   const status = "NEW";
 
   const newLoan = new Loan({
-    customer,
-    provider,
+    user,
     particulars,
     purpose,
     status,
@@ -25,19 +27,53 @@ router.route("/").post((req, res, next) => {
 
   newLoan
     .save()
-    .then(() => {
-      res.json("Loan Created");
+    .then((doc) => {
+      // Update specific user model with id of the loan.
+      const loan = doc._id;
+      User.findById(doc.user, function (err, doc) {
+        if (err && loan) res.status(500).json(err);
+        doc.loans.push(loan);
+        doc.save(function (err, doc) {
+          if (err) res.status(500).json(err);
+          // res.status(200).json(doc);
+        });
+      });
+      res.status(200).json(doc);
       next();
     })
-    .catch((err) => res.status(400).json("Error: " + err));
+    .catch((err) => res.status(500).json("Error: " + err));
 });
 
-router.route("/approve/:_id").post((req, res) => {
+router.route("/approve/:id").post((req, res) => {
   // Only approve loan if user is admin
+  const id = req.params.id;
+  Loan.findById(id, function (err, loan) {
+    if (err) res.status(500).json(err);
+    // loan.status = "APPROVED";
+    loan.history.push({ state: loan.status, time: moment().format("LLLL") });
+    loan.save(function (err, doc) {
+      if (err) res.status(500).json(err);
+      res.status(200).json(doc);
+    });
+  });
 });
 
-router.route("/:_id").get((req, res) => {
+router.route("/:id").get((req, res) => {
   // Only approve loan if user is admin
+  const id = req.params.id;
+  Loan.findOne({ _id: id }, function (err, loan) {
+    if (err) res.status(500).json(err);
+    res.status(200).json(loan);
+  });
+});
+
+router.route("/:id").delete((req, res) => {
+  // Only approve loan if user is admin
+  const id = req.params.id;
+  Loan.deleteOne({ _id: id }, function (err, result) {
+    if (err) res.status(500).json(err);
+    res.status(200).json(result);
+  });
 });
 
 module.exports = router;
