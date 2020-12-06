@@ -1,51 +1,103 @@
 var token = require("../db/models/token.model"),
-  User = require("../db/models/user.model");
+  User = require("../db/models/user.model"),
+  client = require("../db/models/client.model");
 
 const getScope = require("./scopes");
 
-const model = {
-  getUser: function (user, next) {
-    // return fetched user from mongoDB,
-    User.findById(user._id, function (err, doc) {
-      if (err) return next(err);
-      return next(doc);
-    });
-  },
-  saveToken: function (token, user, next) {
-    // save the recieved token in the db,
-    const accessToken = token.accessToken;
-    const accessTokenExpiresOn = token.expiresOn;
-    const userId = user._id;
-    const scope = getScope(user.category);
+module.exports.getClient = async function (clientId, clientSecret, next) {
+  console.log("InGetClient...");
 
-    const newToken = new token({
-      accessToken,
-      accessTokenExpiresOn,
-      userId,
-      scope,
-    });
+  var Client = await client.findById(clientId);
 
-    newToken.save(function (err, doc) {
-      if (err) throw err;
-      return next(doc);
-    });
-  },
-  verifyScope: function (accessToken, category, next) {
-    // verify scopes for the given token,
-    const scope = getScope(category);
-    token.findOne({ accessToken: accessToken }, function (err, doc) {
-      if (err) throw err;
-      scope.forEach((e) => {
-        if (!doc.scope.includes(e)) {
-          return next(false);
-        }
-        return next(true);
-      });
-    });
-    // get the token details from mongoDB,
-    // check the scope for scopes in token,
-    // return the desired boolean flag.
-  },
+  if (Client.secret !== clientSecret) {
+    console.log("Invalid Client");
+  } else {
+    console.log("GotClient");
+    return Client;
+  }
 };
 
-module.exports = model;
+module.exports.getUser = function (name, pass, next) {
+  User.findOne({ name: name }, function (err, user) {
+    if (err) throw err;
+
+    // test a matching password
+    user.comparePassword(pass, function (err, isMatch) {
+      if (err) throw err;
+      console.log(isMatch);
+      next(user);
+    });
+  });
+};
+
+module.exports.getUserFromClient = function (Client, next) {
+  console.log("In getUserFromClient function,");
+  client
+    .findOne({ _id: Client._id })
+    .populate("user")
+    .then(function (client) {
+      if (!client) return false;
+      if (!client.user) return false;
+      console.log("gotUserFromClient");
+      User.findById(client.user[0], (err, user) => next(err, user));
+    })
+    .catch(function (err) {
+      console.log("getUserFromClient - Err: ", err);
+    });
+};
+
+module.exports.saveToken = function (token, client, user, next) {
+  console.log("In saveToken function,");
+
+  const newToken = new token(
+    token.accessToken,
+    token.accessTokenExpiresOn,
+    client._id,
+    user._id,
+    token.scope
+  );
+
+  newToken.save(function (err, doc) {
+    if (err) {
+      console.log("saveToken - Err: ", err);
+    }
+    console.log("savedToken : " + doc);
+    next(doc);
+  });
+};
+
+module.exports.validateScope = function (user, client, scope, next) {
+  let scopeArray = scope.split(",");
+  console.log("In validateScope function");
+  let a = scopeArray,
+    b = client.scope;
+
+  if (a.length !== b.length) next(false);
+  else {
+    console.log("validatedScope");
+    // comapring each element of array
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) next(false);
+    next(true);
+  }
+  // next(isEqual(scopeArray, client.scope));
+};
+
+module.exports.verifyScope = function (accessToken, category, next) {
+  // verify scopes for the given token,
+  console.log("In verifyScope function");
+  const scopes = getScope(category);
+  token.findOne({ accessToken: accessToken }, function (err, doc) {
+    if (err) {
+      console.log("verifyScope - Err: ", err);
+    }
+    scopes.forEach((e) => {
+      if (!doc.scope.includes(e)) {
+        return next(false);
+      }
+      console.log("verifiedScope");
+      return true;
+    });
+  });
+};
+
+//

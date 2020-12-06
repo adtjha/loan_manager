@@ -1,7 +1,7 @@
 const oauthServer = require("oauth2-server");
 const Request = oauthServer.Request;
 const Response = oauthServer.Response;
-const oauth = require("./server");
+const oauth = require("./oauth");
 
 module.exports = function (options) {
   var options = options || {};

@@ -10,16 +10,18 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-oauth-server": "^2.0.0",
     "mocha": "^8.2.1",
     "mockgoose": "^8.0.4",
     "moment": "^2.29.1",
     "mongoose": "^5.10.14",
-    "oauth2-server": "^3.1.1",
     "randomatic": "^3.1.1",
     "supertest": "^6.0.1"
   }

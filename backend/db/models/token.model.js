@@ -10,14 +10,16 @@
 // module.exports = modelInstance;
 
 const mongoose = require("mongoose");
-let User = require("./user.model");
+let User = require("./user.model"),
+  client = require("./client.model");
 
 const Schema = mongoose.Schema;
 
 const tokenSchema = new Schema({
   accessToken: { type: String, required: true },
   accessTokenExpiresOn: { type: Date, required: true },
-  userId: { type: Schema.Types.ObjectId, required: true, ref: User },
+  user: { type: Schema.Types.ObjectId, required: true, ref: User },
+  client: { type: Schema.Types.ObjectId, required: true, ref: client },
   scope: { type: Array, required: true },
 });
 

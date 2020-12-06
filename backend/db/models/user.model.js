@@ -19,6 +19,7 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
     },
+    secret: { type: String, required: true },
     category: { type: String, required: true },
     loans: [{ type: Schema.Types.ObjectId, ref: "loan" }],
   },
