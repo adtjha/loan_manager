@@ -3,6 +3,8 @@ const Request = oauthServer.Request;
 const Response = oauthServer.Response;
 const oauth = require("./oauth");
 
+const authenticate = oauthServer.authenticate();
+
 module.exports = function (options) {
   var options = options || {};
   return function (req, res, next) {

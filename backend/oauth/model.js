@@ -18,20 +18,21 @@ module.exports.getClient = async function (clientId, clientSecret, next) {
 };
 
 module.exports.getUser = function (name, pass, next) {
+  console.log("In getUser...");
   User.findOne({ name: name }, function (err, user) {
     if (err) throw err;
 
     // test a matching password
     user.comparePassword(pass, function (err, isMatch) {
       if (err) throw err;
-      console.log(isMatch);
+      console.log("gotUser ", isMatch);
       next(user);
     });
   });
 };
 
 module.exports.getUserFromClient = function (Client, next) {
-  console.log("In getUserFromClient function,");
+  console.log("In getUserFromClient...");
   client
     .findOne({ _id: Client._id })
     .populate("user")
@@ -47,7 +48,7 @@ module.exports.getUserFromClient = function (Client, next) {
 };
 
 module.exports.saveToken = function (token, client, user, next) {
-  console.log("In saveToken function,");
+  console.log("In saveToken...");
 
   const newToken = new token(
     token.accessToken,
@@ -61,14 +62,14 @@ module.exports.saveToken = function (token, client, user, next) {
     if (err) {
       console.log("saveToken - Err: ", err);
     }
-    console.log("savedToken : " + doc);
+    console.log("savedToken");
     next(doc);
   });
 };
 
 module.exports.validateScope = function (user, client, scope, next) {
   let scopeArray = scope.split(",");
-  console.log("In validateScope function");
+  console.log("In validateScope...");
   let a = scopeArray,
     b = client.scope;
 
@@ -84,7 +85,7 @@ module.exports.validateScope = function (user, client, scope, next) {
 
 module.exports.verifyScope = function (accessToken, category, next) {
   // verify scopes for the given token,
-  console.log("In verifyScope function");
+  console.log("In verifyScope...");
   const scopes = getScope(category);
   token.findOne({ accessToken: accessToken }, function (err, doc) {
     if (err) {

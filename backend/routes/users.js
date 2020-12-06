@@ -4,12 +4,12 @@ let User = require("../db/models/user.model");
 
 const Crypto = require("crypto");
 
-// const authenticate = require("../oauth/authenticate");
+const authenticate = require("../oauth/authenticate");
 
 // Get all the Users that are stored.
 router.get(
   "/",
-  // authenticate({ scope: "create/update/delete costmer profile" }),
+  authenticate({ scope: "create/update/delete costmer profile" }),
   (req, res) => {
     User.find()
       .populate("loans")
