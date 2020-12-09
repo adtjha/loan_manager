@@ -18,6 +18,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-oauth-server": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mocha": "^8.2.1",
     "mockgoose": "^8.0.4",
     "moment": "^2.29.1",
