@@ -66,3 +66,16 @@ I have used JWT in order to create user accessTokens. Each Time a user logs in, 
 
 All the api endpoints are protected with a middleware `authenticate({scope: scope_related_to_endpoint})`, and whenever any user fetches the endpoint with his `accessToken`, his `accessToken` is verified using the Client Id attached to the token (which is fetched from database),  and if the scope of client matches the scope required then access is provided else error is returned.
 
+Generating Fresh Tokens, is done in the following way,
+
+1. User submits his expired token,
+2. We fetch the respective token from the database on the server side,
+3. A new user `accessToken` is generated using `clientSecret` , 
+4. Send new `accessToken` to user.   
+
+### Password Storage and Verification
+
+> Exact Password is never stored on database.
+
+Passwords are salted and hashed, whenever a new user is stored on database, and stored on the database with their respective salt. Each time whenever user logs in, the password is then salted with salt attached to the user, and hashed, and is then compared to the stored password.
+
