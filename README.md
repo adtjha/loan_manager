@@ -7,11 +7,15 @@ A sample API built for manging loan accounts, by admin, agents, and customers.
 ```
 $   npm install
 ```
-3. Run the Tests.
+3. Create [MongoDB Account](https://account.mongodb.com/account/register?n=%2Fv2%2F5fb213cc66ce1e33a690b2e1&nextHash=%23metrics%2FreplicaSet%2F5fb2150134516e28adc124ca%2Fexplorer%2Ftest), and an Atlas Database, create a .env files containing URI, code.
+```
+ATLAS_URI=mongodb+srv://[username]:[password]@[database_name].zqeja.mongodb.net/test?retryWrites=true&w=majority
+```
+4. Run the Tests.
 ```
 $   npm run test
 ```
-4. Start the server.
+5. Start the server.
 ```
 $   npm start
 ```
