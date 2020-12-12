@@ -81,3 +81,74 @@ All the api endpoints are protected with a middleware `authenticate({scope: scop
 
 Passwords are salted and hashed, whenever a new user is stored on database, and stored on the database with their respective salt. Each time whenever user logs in, the password is then salted with salt attached to the user, and hashed, and is then compared to the stored password.
 
+# Database Structure
+
+There are five collections, which are,
+
+### Users Database Model
+```
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: 3,
+    },
+    pass: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    secret: { type: String, required: true },
+    category: { type: String, required: true },
+    loans: [{ type: Schema.Types.ObjectId, ref: "loan" }],
+  }
+```
+
+### Client Database Model
+```
+{
+    category: {
+      type: String,
+      required: true,
+    },
+    grants: { type: Array, required: true },
+    secret: { type: String, required: true },
+    scope: { type: Array, required: true },
+    user: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  }
+```
+
+### Loan Database Model
+```
+{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    particulars: {
+      amount: { type: Number, required: true },
+      rate: { type: Number, required: true },
+      tenure: { type: Number, required: true },
+      emi: { type: Number },
+      payments: [],
+    },
+    purpose: { type: String, required: true },
+    status: { type: String, required: true },
+    history: [],
+  }
+```
+
+### Token Database Model
+```
+{
+  accessToken: { type: String, required: true },
+  refreshToken: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: true, ref: User },
+  client: { type: Schema.Types.ObjectId, required: true, ref: client },
+  scope: { type: Array, required: true },
+}
+```
