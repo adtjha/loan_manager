@@ -21,8 +21,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
-// require("./oauth/index")(app);
-
 const loanRouter = require("./routes/loan");
 const usersRouter = require("./routes/users");
 
