@@ -60,13 +60,15 @@ $   npm start
 
 # Authentication & User Role Management
 
+### Generating Access Tokens
+
 I have used JWT in order to create user accessTokens. Each Time a user logs in, he passes a username and password combo, which is then verified on server side. After successful verification, an `accessToken` is generated using the client id that user is attached to, and returned to the user. With this user can access the endpoints. 
 
 > Any user which is added to database has a category which is his particular client category. Each time any new user is added, respective client database is updated with user's id.
 
 All the api endpoints are protected with a middleware `authenticate({scope: scope_related_to_endpoint})`, and whenever any user fetches the endpoint with his `accessToken`, his `accessToken` is verified using the Client Id attached to the token (which is fetched from database),  and if the scope of client matches the scope required then access is provided else error is returned.
 
-Generating Fresh Tokens, is done in the following way,
+### Generating Fresh Tokens
 
 1. User submits his expired token,
 2. We fetch the respective token from the database on the server side,
