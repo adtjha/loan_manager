@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const conn = require("./db/index");
-const authenticate = require("./oauth/authenticate");
+// const authenticate = require("./oauth/authenticate");
 const bodyParser = require("body-parser");
 
 require("dotenv").config();
@@ -19,9 +19,9 @@ connection.once("open", () => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-// app.use(express.json());
+app.use(express.json());
 
-require("./oauth/index")(app);
+// require("./oauth/index")(app);
 
 const loanRouter = require("./routes/loan");
 const usersRouter = require("./routes/users");
@@ -32,13 +32,5 @@ app.use("/users", usersRouter);
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
-
-app.post(
-  "/mc",
-  authenticate({ scope: "read single customer profile" }),
-  function (req, res) {
-    res.send("Bhak Madarchod !");
-  }
-);
 
 module.exports = app;

@@ -3,7 +3,7 @@ let Loan = require("../db/models/loan.model");
 let User = require("../db/models/user.model");
 const moment = require("moment");
 
-// const authenticate = require("../oauth/authenticate");
+const authenticate = require("../jwt/authenticate");
 
 router.get(
   "/",
@@ -19,7 +19,7 @@ router.get(
 
 router.post(
   "/",
-  // authenticate({ scope: "create/update/delete loan profile" }),
+  authenticate({ scope: "create/update/delete loan profile" }),
   (req, res, next) => {
     // create loan from data.
     const user = req.body.user;
@@ -56,7 +56,7 @@ router.post(
 
 router.post(
   "/approve/:id",
-  // authenticate({ scope: "approve loan profile" }),
+  authenticate({ scope: "approve loan profile" }),
   (req, res) => {
     // Only approve loan if user is admin
     const id = req.params.id;
@@ -74,7 +74,7 @@ router.post(
 
 router.get(
   "/:id",
-  // authenticate({ scope: "read single loan profile" }),
+  authenticate({ scope: "read single loan profile" }),
   (req, res) => {
     // Only approve loan if user is admin
     const id = req.params.id;
@@ -87,7 +87,7 @@ router.get(
 
 router.delete(
   "/:id",
-  // authenticate({ scope: "create/update/delete loan profile" }),
+  authenticate({ scope: "create/update/delete loan profile" }),
   (req, res) => {
     // Only approve loan if user is admin
     const id = req.params.id;
