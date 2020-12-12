@@ -9,7 +9,7 @@ $   npm install
 ```
 3. Run the Tests.
 ```
-npm run test
+$   npm run test
 ```
 4. Start the server.
 ```
