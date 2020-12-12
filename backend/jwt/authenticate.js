@@ -35,10 +35,15 @@ module.exports = (options) => {
             }
             req.user = user;
           });
-          if (category.includes(client.category)) {
+          if (category.includes(result.category)) {
             next();
           } else {
-            res.status(403).json("Scope Not Valid" + err);
+            res.status(403).json({
+              message: "Scope Not Valid",
+              error: err,
+              category: result.category,
+              required: category,
+            });
           }
         });
       })
