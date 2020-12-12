@@ -22,7 +22,7 @@ $   npm start
 
 - GET `/users/` - Get all the users information, with respective loan information.
 > Access Token Required, Scope: Agent/Admin
-  
+
 - POST `/users/` - Add a new user to the Database.
 > Access Token Required, Scope: Agent/Admin
 
@@ -60,11 +60,9 @@ $   npm start
 
 # Authentication & User Role Management
 
-I have used JWT in order to create user accessTokens. Each Time a user logs in, he passes a username and password combo, which is then verified on server side. After successful verification, an `accessToken` is generated and returned to the user.
-With this user can access the endpoints.
+I have used JWT in order to create user accessTokens. Each Time a user logs in, he passes a username and password combo, which is then verified on server side. After successful verification, an `accessToken` is generated using the client id that user is attached to, and returned to the user. With this user can access the endpoints. 
 
-All the api endpoints are protected with a middleware `authenticate({scope: scope_related_to_endpoint})`, and whenever any user fetched the endpoint with his `accessToken`, his `accessToken` is verified using the Client Id attached to the token (which is fetched from database), 
-and if the scope of client matches the scope required then access is provided else error is returned.
+> Any user which is added to database has a category which is his particular client category. Each time any new user is added, respective client database is updated with user's id.
 
-Any user which is added to database has a category which is his particular client category. Each time any new user is added, respective client database is updated with user's id.
+All the api endpoints are protected with a middleware `authenticate({scope: scope_related_to_endpoint})`, and whenever any user fetches the endpoint with his `accessToken`, his `accessToken` is verified using the Client Id attached to the token (which is fetched from database),  and if the scope of client matches the scope required then access is provided else error is returned.
 
